@@ -11,9 +11,19 @@ class display():
     def fill(self,color):
         self.window.configure(bg=color)
 
-
 canvas = Canvas()
 class draw():
-    def line(surface,start,end):
-        canvas.create_line(start,end)
-    
+    canvas = Canvas()
+    def line(start,end,color,width):
+        canvas.create_line(start,end,width=width,fill=color)
+        canvas.pack(fill=BOTH, expand=1)
+    def polyb(vertices,color,width):
+        canvas.create_line(vertices,vertices[0],fill=color,width=width)
+        canvas.pack(fill=BOTH, expand=1)
+    def poly(vertices,color):
+        points = []
+        for vertex in vertices:
+            points.append(vertex[0])
+            points.append(vertex[1])
+        canvas.create_polygon(points,fill=color)
+        canvas.pack(fill=BOTH, expand=1)
