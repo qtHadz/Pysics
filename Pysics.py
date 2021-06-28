@@ -6,11 +6,14 @@ class Vector2():
         self.x = x
         self.y = y
         self.list = [x,y]
+        self.flist = [floor(x),floor(y)]
         self.mag = sqrt(x*x + y*y)
         if self.mag != 0:
             self.angle = copysign(1,y)*acos(x/self.mag)
         else:
             self.angle = 0
+    def updatemag(self):
+        self.mag = sqrt(self.x*self.x + self.y*self.y)
     def polar(angle,mag):
         y = -mag*sin(angle)
         x = mag*cos(angle)
@@ -18,7 +21,7 @@ class Vector2():
     def __neg__(self):
         return Vector2(-self.x,-self.y)
     def __str__(self):
-        return f"[{self.x},{self.y}]"
+        return "["+str(self.x)+","+str(self.y)+"]"
     def __mul__(self,other):
         if type(other) == type(1) or type(other) == type(1.0):
             return Vector2(self.x*other,self.y*other)
@@ -54,11 +57,12 @@ class Vector2():
         a2 = barrier.angle
         a = pi +2*a2 - a1
         v = Vector2.polar(a,self.mag)
+        print(self.mag,self,v)
         return v
 
 GRAVITY = 9.81
 class PhysicsObject():
-    def __init__(self,pos,mass,area,dims):
+    def __init__(self,pos,mass,area,dims,bouncy):
         self.pos = pos
         self.velocity = Vector2(0,0)
         self.acceleration = Vector2(0,0)
@@ -67,16 +71,21 @@ class PhysicsObject():
         self.dims = dims
         self.area = area
         self.density = mass/area
+        self.bouncy = bouncy
     def applygravity(self):
         self.velocity.y += GRAVITY
+        self.velocity.updatemag()
     def applyacceleration(self,acc):
         self.velocity += acc
+        self.velocity.updatemag()
     def setacceleration(self,acc):
         self.velocity += acc
     def applyforce(self,force):
         self.velocity += force/self.mass
+        self.velocity.updatemag()
     def setvelocity(self,vel):
         self.velocity = vel
+        self.velocity.updatemag()
     def setpos(self,pos):
         self.pos = pos
     def move(self):
