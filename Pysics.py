@@ -14,6 +14,9 @@ class Vector2():
             self.angle = 0
     def updatemag(self):
         self.mag = sqrt(self.x*self.x + self.y*self.y)
+    def getangle(self):
+        self.angle = copysign(1,self.y)*acos(self.x/self.mag)
+        return self.angle
     def polar(angle,mag):
         y = -mag*sin(angle)
         x = mag*cos(angle)
@@ -52,12 +55,13 @@ class Vector2():
             return Vector2(self.x-other.x,self.y-other.y)
         else:
             raise Exception("Not Supported")
-    def bounceagainst(self,barrier):
-        a1 = pi - self.angle
-        a2 = barrier.angle
+    def bounceagainst(self,barrier,bounciness):
+        a1 = pi - self.getangle()
+        a2 = barrier.getangle()
         a = pi +2*a2 - a1
         v = Vector2.polar(a,self.mag)
-        print(self.mag,self,v)
+        v *= bounciness
+        print(self,v)
         return v
 
 GRAVITY = 9.81
@@ -90,6 +94,8 @@ class PhysicsObject():
         self.pos = pos
     def move(self):
         self.pos += self.velocity
+        self.velocity.getangle()
+        self.velocity.updatemag()
 
     
         
