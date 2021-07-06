@@ -64,7 +64,7 @@ class Vector2():
         print(self,v)
         return v
 
-GRAVITY = 9.81
+GRAVITY = 9.81/60
 class PhysicsObject():
     def __init__(self,pos,mass,area,dims,bouncy):
         self.pos = pos
