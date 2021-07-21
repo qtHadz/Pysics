@@ -3,15 +3,54 @@ from math import *
 PhysicsObject = Pysics.PhysicsObject
 Vector2 = Pysics.Vector2
 
-screen = pygame.display.set_mode((1000,600))
+screenWidth = 1000
+screenHeight = 500
+screenSize = (screenWidth,screenHeight)
+screen = pygame.display.set_mode(screenSize)
 
-o = PhysicsObject(Vector2(100,500),10,pi*6*6,[6,6],1) 
-o.setvelocity(Vector2(0,0))
+
+class ball():
+    def __init__(self,name,color,startPos,mass,radius,bounciness):
+        self.name = name
+        self.color = color
+        self.startPos = startPos
+        self.mass = mass
+        self.radius = radius
+        self.bounciness = bounciness
+        self.physics = PhysicsObject(startPos,mass,pi*radius*radius,[radius,radius],bounciness)
+    def __str__(self):
+        out = f"{self.name}:\n"
+        out += f"mass: {self.mass}kg\n"
+        out += f"radius: {self.radius}m\n"
+        out += f"bounciness?: {self.mass}?\n"
+        out += f"velocity: {self.physics.velocity}m/s\n"
+        out += f"pos: {self.physics.pos}\n"
+        return out
+    def draw(self):
+        pygame.draw.circle(screen,self.color,self.physics.pos.flist,self.radius)
+    def reset(self):
+        self.physics.setpos(self.startPos)
+        self.physics.setvelocity(Vector2(0,0))
+    def move(self,gravity):
+        if gravity:
+            self.physics.velocity.y += Pysics.GRAVITY
+        self.physics.move()
+        
+        if self.physics.pos.y > screenHeight - self.radius:
+            self.physics.pos -= self.physics.velocity
+            self.physics.velocity = self.physics.velocity.bounceagainst(Vector2(1,0),self.bounciness)
+        if self.physics.pos.x > screenWidth - self.radius or self.physics.pos.x < 0-self.radius:
+            self.physics.pos -= self.physics.velocity
+            self.physics.velocity = self.physics.velocity.bounceagainst(Vector2(0,1),self.bounciness)
+            
+
 
 
 FPS = 60
-#Pysics.GRAVITY /=FPS
+Pysics.GRAVITY /=FPS
 clock = pygame.time.Clock()
+
+o = ball("Ball1",(255,255,255),Vector2(100,10),10,6,1)
 while True:
     screen.fill((0,0,0))
     events = pygame.event.get()
@@ -20,17 +59,10 @@ while True:
             pygame.quit()
             sys.exit()
 
-            
-    o.velocity.y += Pysics.GRAVITY
-    o.move()
-    if o.pos.y > 600-6:
-        o.pos -= o.velocity
-        print(o.velocity)
-        o.velocity = o.velocity.bounceagainst(Vector2(1,0),o.bouncy)
-        o.pos += o.velocity
+    o.move(True)
+    o.draw()
         
-    pygame.draw.circle(screen,(255,255,255),o.pos.flist,6)
-    pygame.draw.line(screen,(255,0,0),[0,500],[1000,500],2)
+
+
     pygame.display.update()
     clock.tick(FPS)
-

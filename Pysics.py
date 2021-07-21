@@ -7,16 +7,14 @@ class Vector2():
         self.y = y
         self.list = [x,y]
         self.flist = [floor(x),floor(y)]
-        self.mag = sqrt(x*x + y*y)
-        if self.mag != 0:
-            self.angle = copysign(1,y)*acos(x/self.mag)
+    def mag(self):
+        return sqrt(self.x*self.x + self.y*self.y)
+    def angle(self):
+        mag = self.mag()
+        if mag == 0:
+            return 0
         else:
-            self.angle = 0
-    def updatemag(self):
-        self.mag = sqrt(self.x*self.x + self.y*self.y)
-    def getangle(self):
-        self.angle = copysign(1,self.y)*acos(self.x/self.mag)
-        return self.angle
+            return copysign(1,self.y)*acos(self.x/mag)
     def polar(angle,mag):
         y = -mag*sin(angle)
         x = mag*cos(angle)
@@ -56,15 +54,15 @@ class Vector2():
         else:
             raise Exception("Not Supported")
     def bounceagainst(self,barrier,bounciness):
-        a1 = pi - self.getangle()
-        a2 = barrier.getangle()
+        a1 = pi - self.angle()
+        a2 = barrier.angle()
         a = pi +2*a2 - a1
-        v = Vector2.polar(a,self.mag)
+        v = Vector2.polar(a,self.mag())
         v *= bounciness
-        print(self,v)
+        self = v
         return v
 
-GRAVITY = 9.81/60
+GRAVITY = 9.81
 class PhysicsObject():
     def __init__(self,pos,mass,area,dims,bouncy):
         self.pos = pos
@@ -78,24 +76,18 @@ class PhysicsObject():
         self.bouncy = bouncy
     def applygravity(self):
         self.velocity.y += GRAVITY
-        self.velocity.updatemag()
     def applyacceleration(self,acc):
         self.velocity += acc
-        self.velocity.updatemag()
     def setacceleration(self,acc):
         self.velocity += acc
     def applyforce(self,force):
         self.velocity += force/self.mass
-        self.velocity.updatemag()
     def setvelocity(self,vel):
         self.velocity = vel
-        self.velocity.updatemag()
     def setpos(self,pos):
         self.pos = pos
     def move(self):
         self.pos += self.velocity
-        self.velocity.getangle()
-        self.velocity.updatemag()
 
     
         
