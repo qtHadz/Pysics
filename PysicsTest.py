@@ -3,8 +3,8 @@ from math import *
 PhysicsObject = Pysics.PhysicsObject
 Vector2 = Pysics.Vector2
 
-screenWidth = 1920
-screenHeight = 1080
+screenWidth = 1000
+screenHeight = 500
 screenSize = (screenWidth,screenHeight)
 screen = pygame.display.set_mode(screenSize)
 
@@ -13,9 +13,13 @@ class ball():
     def randomBall():
         color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
         rad = random.randint(1,4)
-        newB = ball("",color,Vector2(screenWidth/2,-10),10,rad,1)
-        rvX = random.random()*random.randint(1,3)
-        rvY = random.random()*random.randint(1,3)
+        newB = ball("",color,Vector2(screenWidth/2,screenHeight/2),10,rad,1)
+        rvX = random.random()#*random.randint(1,3)
+        rvY = random.random()#*random.randint(1,3)
+        if random.randint(1,2) == 1:
+            rvX *= -1
+        if random.randint(1,2) == 1:
+            rvY *= -1
         newB.physics.setvelocity(Vector2(rvX,rvY))
         return newB
     def __init__(self,name,color,startPos,mass,radius,bounciness):
@@ -41,29 +45,30 @@ class ball():
         self.physics.setvelocity(Vector2(0,0))
     def move(self,doGravity,gravityScalar):
         if doGravity:
-            self.physics.velocity.y += Pysics.GRAVITY*gravityScalar
-        self.physics.move()
+            self.physics.applygravity()
+        self.physics.move(vScaler)
         
         if self.physics.pos.y > screenHeight - self.radius: #or self.physics.pos.y < 0 +self.radius:
-            self.physics.pos -= self.physics.velocity
+            self.physics.pos -= self.physics.velocity*deltaTime
             self.physics.velocity = self.physics.velocity.bounceagainst(Vector2(1,0),self.bounciness)
         if self.physics.pos.x > screenWidth - self.radius or self.physics.pos.x < 0+self.radius:
-            self.physics.pos -= self.physics.velocity
+            self.physics.pos -= self.physics.velocity*deltaTime
             self.physics.velocity = self.physics.velocity.bounceagainst(Vector2(0,1),self.bounciness)
             
 
 
 
 
-FPS = 120
-Pysics.GRAVITY /= (FPS*FPS)
+vScaler = 100
+FPS = 60
+deltaTime = (1/(FPS))
+Pysics.deltaTime = deltaTime
 clock = pygame.time.Clock()
 time = 0
 balls = []
-
 #balls.append(ball("",(255,255,255),Vector2(100,0),10,1,0.5))
 
-for i in range(0,100000):
+for i in range(0,200):
     balls.append(ball.randomBall())
 
 while True:
@@ -81,11 +86,9 @@ while True:
             
 
     for b in balls:
-        b.move(True,25)
+        b.move(True,1)
         b.draw()
         
-
-
     pygame.display.update()
     time += 1
     clock.tick(FPS)
