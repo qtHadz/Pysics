@@ -43,32 +43,30 @@ class ball():
     def reset(self):
         self.physics.setpos(self.startPos)
         self.physics.setvelocity(Vector2(0,0))
-    def move(self,doGravity,gravityScalar):
+    def move(self,doGravity):
         if doGravity:
             self.physics.applygravity()
-        self.physics.move(vScaler)
+        self.physics.move()
         
         if self.physics.pos.y > screenHeight - self.radius: #or self.physics.pos.y < 0 +self.radius:
             self.physics.pos -= self.physics.velocity*deltaTime
             self.physics.velocity = self.physics.velocity.bounceagainst(Vector2(1,0),self.bounciness)
+            print(time)
         if self.physics.pos.x > screenWidth - self.radius or self.physics.pos.x < 0+self.radius:
             self.physics.pos -= self.physics.velocity*deltaTime
             self.physics.velocity = self.physics.velocity.bounceagainst(Vector2(0,1),self.bounciness)
             
 
 
-
-
-vScaler = 100
 FPS = 60
 deltaTime = (1/(FPS))
 Pysics.deltaTime = deltaTime
 clock = pygame.time.Clock()
-time = 0
+time = 1
 balls = []
-#balls.append(ball("",(255,255,255),Vector2(100,0),10,1,0.5))
+balls.append(ball("",(255,255,255),Vector2(100,0),10,1,0.5))
 
-for i in range(0,200):
+for i in range(0,0):
     balls.append(ball.randomBall())
 
 while True:
@@ -86,7 +84,7 @@ while True:
             
 
     for b in balls:
-        b.move(True,1)
+        b.move(True)
         b.draw()
         
     pygame.display.update()

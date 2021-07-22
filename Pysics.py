@@ -62,8 +62,7 @@ class Vector2():
         self = v
         return v
 
-deltaTime = 1
-GRAVITY = 9.81
+
 class PhysicsObject():
     def __init__(self,pos,mass,area,dims,bouncy):
         self.pos = pos
@@ -76,19 +75,30 @@ class PhysicsObject():
         self.density = mass/area
         self.bouncy = bouncy
     def applygravity(self):
-        self.velocity.y += GRAVITY*deltaTime*deltaTime
+        self.velocity.y += GRAVITY*deltaTime
     def applyacceleration(self,acc):
         self.velocity += acc*deltaTime
     def setacceleration(self,acc):
-        self.velocity += acc*deltaTime
+        self.acceleration += acc
     def applyforce(self,force):
-        self.velocity += (force/self.mass)*deltaTime
+        self.acceleration += (force/self.mass)
     def setvelocity(self,vel):
         self.velocity = vel
     def setpos(self,pos):
         self.pos = pos
-    def move(self,scaler):
-        self.pos += self.velocity*deltaTime*scaler
+    def move(self):
+        self.pos += self.velocity*deltaTime
+
+
+
+
+deltaTime = 1
+GRAVITY = 9.81
+
+
+
+    
+
 
     
         
