@@ -1,9 +1,9 @@
 import Pysics,pygame,sys,random
 from math import *
-PhysicsObject = Pysics.PhysicsObject
+Projectile = Pysics.Projectile
 Vector2 = Pysics.Vector2
 
-screenWidth = 1000
+screenWidth = 500
 screenHeight = 500
 screenSize = (screenWidth,screenHeight)
 screen = pygame.display.set_mode(screenSize)
@@ -12,10 +12,10 @@ screen = pygame.display.set_mode(screenSize)
 class ball():
     def randomBall():
         color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
-        rad = random.randint(1,4)
+        rad = random.randint(4,8)
         newB = ball("",color,Vector2(screenWidth/2,screenHeight/2),10,rad,1)
-        rvX = random.random()#*random.randint(1,3)
-        rvY = random.random()#*random.randint(1,3)
+        rvX = random.random()*random.randint(0,100)
+        rvY = random.random()*random.randint(0,100)
         if random.randint(1,2) == 1:
             rvX *= -1
         if random.randint(1,2) == 1:
@@ -29,7 +29,7 @@ class ball():
         self.mass = mass
         self.radius = radius
         self.bounciness = bounciness
-        self.physics = PhysicsObject(startPos,mass,pi*radius*radius,[radius,radius],bounciness)
+        self.physics = Projectile(startPos,mass,pi*radius*radius,[radius,radius],bounciness)
     def __str__(self):
         out = f"{self.name}:\n"
         out += f"mass: {self.mass}kg\n"
@@ -64,9 +64,9 @@ Pysics.deltaTime = deltaTime
 clock = pygame.time.Clock()
 time = 1
 balls = []
-balls.append(ball("",(255,255,255),Vector2(100,0),10,1,0.5))
+#balls.append(ball("",(255,255,255),Vector2(100,0),10,1,0.5))
 
-for i in range(0,0):
+for i in range(0,100):
     balls.append(ball.randomBall())
 
 while True:

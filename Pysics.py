@@ -63,7 +63,7 @@ class Vector2():
         return v
 
 
-class PhysicsObject():
+class Projectile():
     def __init__(self,pos,mass,area,dims,bouncy):
         self.pos = pos
         self.velocity = Vector2(0,0)
@@ -89,11 +89,26 @@ class PhysicsObject():
     def move(self):
         self.pos += self.velocity*deltaTime
 
+class Orbital():
+    def __init__(self,pos,startVelocity,radius,mass):
+        self.pos = pos
+        self.velocity = startVelocity
+        self.mass = mass
+        self.radius = radius
+    def forceBetween(self,object):
+        f = G*self.mass*object.mass
+        rX = object.pos.x - self.pos.x
+        rY = object.pos.y - self.pos.y
+        fX = copysign(1,rX)*f/(rX*rX)
+        fY = copysign(1,rY)*f/(rY*rY)
+        return Vector2(fX,fY)
+        
 
 
 
 deltaTime = 1
 GRAVITY = 9.81
+G = 6.67*pow(10,-11)
 
 
 
